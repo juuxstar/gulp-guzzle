@@ -1,0 +1,8 @@
+{
+    "name"   : "@juuxstar/gulp-guzzle",
+    "version": "1.0.0",
+    "main"   : "guzzle.js",
+    "dependencies": {
+        "viz.js" : "^2.1.2"
+    }
+}
