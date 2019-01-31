@@ -1,11 +1,12 @@
 /**
  * Guzzle - better syntax for Gulp
  */
-const gulp = require('gulp');
-const fs   = require('fs');
-const path = require('path');
-const Viz  = require('viz.js');
-const _    = require('lodash');
+const gulp               = require('gulp');
+const fs                 = require('fs');
+const path               = require('path');
+const Viz                = require('viz.js');
+const { Module, render } = require('viz.js/full.render.js');
+const _                  = require('lodash');
 
 const guzzleTasks = [];
 let graphFilename;
@@ -157,7 +158,7 @@ function makeGulpTasks() {
 	});
 }
 
-function outputTaskGraph() {
+async function outputTaskGraph() {
 	const result = [ 'digraph G {' ];
 
 	guzzleTasks.forEach(guzzleTask => {
@@ -178,7 +179,9 @@ function outputTaskGraph() {
 
 	result.push('}');
 
-	fs.writeFileSync(graphFilename, Viz(result.join('\n'), {
+	const viz = new Viz({ Module, render });
+
+	fs.writeFileSync(graphFilename, await viz.renderString(result.join('\n'), {
 		format : path.extname(graphFilename).substr(1),
 	}));
 }
