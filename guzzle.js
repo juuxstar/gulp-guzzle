@@ -55,7 +55,7 @@ const guzzle = module.exports = function(plugins, { taskGraph, onFinish, prettyP
 		const task    = findGuzzleTask(event.task);
 		task._state   = State.STARTED;
 		task._started = new Date();
-		if (prettyPrint) { printTasks(); }
+		if (prettyPrint) printTasks();
 	});
 
 	gulp.on('task_stop', event => {
@@ -63,12 +63,12 @@ const guzzle = module.exports = function(plugins, { taskGraph, onFinish, prettyP
 		if (task._state === State.DONE) return;
 		task._state = State.DONE;
 		task._ended = new Date();
-		if (prettyPrint) { printTasks(); }
+		if (prettyPrint) printTasks();
 	});
 
 	gulp.on('task_err', event => {
 		findGuzzleTask(event.task)._state = State.ERROR;
-		if (prettyPrint) { printTasks(); }
+		if (prettyPrint) printTasks();
 	});
 
 	for (const name in plugins) {
@@ -84,21 +84,23 @@ const guzzle = module.exports = function(plugins, { taskGraph, onFinish, prettyP
 };
 
 /**
- * @param {Object} [options]
- * @param {Boolean} [options.runOnce] if true, task is only ever executed once
+ * Defines a guzzle task.
+ * @param {String}   name
+ * @param {String[]} [depends] array of dependencies for this task
+ * @param {Function} [doneCallback]
  */
-guzzle.task = function(name, depends, doneCallback, options={}) {
-	const { name, depends, doneCallback, options } = parseTaskArguments(...arguments)
-	return new GuzzleTask(name, depends, doneCallback, options);
+guzzle.task = function() {
+	const { name, depends, doneCallback } = parseTaskArguments(...arguments)
+	return new GuzzleTask(name, depends, doneCallback);
 };
 
 /**
  * A variant of guzzle.task that only runs once.
+ * @see guzzle.task for params
  */
-guzzle.taskOnce = function(name, depends, doneCallback, options={}) {
-	const { name, depends, doneCallback, options } = parseTaskArguments(...arguments);
-	options.runOnce = true;
-	return guzzle.task(name, depends, doneCallback, options);
+guzzle.taskOnce = function() {
+	const { name, depends, doneCallback } = parseTaskArguments(...arguments);
+	return new GuzzleTask(name, depends, doneCallback, { runOnce : true });
 };
 
 guzzle.watch = gulp.watch.bind(gulp);
@@ -124,7 +126,7 @@ class GuzzleTask {
 
 		if (onDoneFunction) {
 			this._onDoneFunction = callback => {
-				if (this._runOnce && this._state !== State.NOT_STARTED) {
+				if (this._runOnce && this._ended) {
 					return callback();
 				}
 
@@ -249,7 +251,7 @@ function printTasks() {
 	);
 }
 
-function parseTaskArguments(name, depends, doneCallback, options={}) {
+function parseTaskArguments(name, depends, doneCallback) {
 	// check if called without any dependencies
 	if (arguments.length === 2 && typeof depends === 'function') {
 		doneCallback = depends;
@@ -262,5 +264,5 @@ function parseTaskArguments(name, depends, doneCallback, options={}) {
 
 	depends = _.compact(depends);
 
-	return { name, depends, doneCallback, options};
+	return { name, depends, doneCallback };
 }

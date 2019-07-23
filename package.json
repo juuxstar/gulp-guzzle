@@ -1,11 +1,15 @@
 {
     "name": "@juuxstar/gulp-guzzle",
-    "version": "1.0.3",
+    "version": "1.0.6",
     "main": "guzzle.js",
     "dependencies": {
         "viz.js": "^2.1.2",
         "lodash": "^4.17.11",
         "gulp": "^3.9.1",
         "clc" : "^1.0.2"
+    },
+    "devDependencies": {
+        "mocha" : "^6.2.0",
+        "chai"  : "^4.2.0"
     }
 }
