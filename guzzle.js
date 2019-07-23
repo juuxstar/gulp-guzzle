@@ -83,7 +83,6 @@ const guzzle = module.exports = function(plugins, { taskGraph, onFinish, prettyP
 	}
 };
 
-
 /**
  * @param {Object} [options]
  * @param {Boolean} [options.runOnce] if true, task is only ever executed once
@@ -100,7 +99,7 @@ guzzle.taskOnce = function(name, depends, doneCallback, options={}) {
 	const { name, depends, doneCallback, options } = parseTaskArguments(...arguments);
 	options.runOnce = true;
 	return guzzle.task(name, depends, doneCallback, options);
-}
+};
 
 guzzle.watch = gulp.watch.bind(gulp);
 
