@@ -4,7 +4,7 @@
     "main": "guzzle.js",
     "dependencies": {
         "viz.js": "^2.1.2",
-        "lodash": "^4.17.11",
+        "lodash": "^4.17.19",
         "gulp": "^3.9.1",
         "clc" : "^1.0.2"
     },
